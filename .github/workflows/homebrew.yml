@@ -25,14 +25,14 @@ jobs:
       - name: Fetch latest release tag
         id: latest_release
         run: |
-          require 'octokit'
-          client = Octokit::Client.new(access_token: ENV['GITHUB_TOKEN'])
-          repo = 'koriym/deepldoc'
-          latest_release = client.latest_release(repo)
-          puts "::set-output name=tag::#{latest_release.tag_name}"
+          echo "require 'octokit'" >> script.rb
+          echo "client = Octokit::Client.new(access_token: ENV['GITHUB_TOKEN'])" >> script.rb
+          echo "repo = 'koriym/deepldoc'" >> script.rb
+          echo "latest_release = client.latest_release(repo)" >> script.rb
+          echo "puts \"::set-output name=tag::#{latest_release.tag_name}\"" >> script.rb
+          ruby script.rb
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        shell: ruby
 
       - name: Download release tarball
         run: |
