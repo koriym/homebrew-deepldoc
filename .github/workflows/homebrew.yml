@@ -60,7 +60,7 @@ jobs:
         run: |
           pwd
           ls
-          if [ -f "/${{ matrix.command }}.rb" ]; then 
+          if [ -f "./${{ matrix.command }}.rb" ]; then 
           ruby -pi -e "gsub(/url \".*\"/, \"url \\\"https://github.com/koriym/deepldoc/releases/download/${{ steps.latest_release.outputs.tag }}/${{ matrix.command }}\\\"\")" ./${{ matrix.command }}.rb
           ruby -pi -e "gsub(/sha256 \".*\"/, \"sha256 \\\"${{ steps.sha.outputs.sha }}\\\"\")" ./${{ matrix.command }}.rb
           else
