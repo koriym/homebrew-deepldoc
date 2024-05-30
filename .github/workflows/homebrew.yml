@@ -1,8 +1,6 @@
 name: Update Homebrew Formula
 
 on:
-  schedule:
-    - cron: '0 0 * * *' # Run this workflow daily
   workflow_dispatch: # Allow manual trigger
 
 jobs:
