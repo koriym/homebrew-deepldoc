@@ -32,6 +32,7 @@ jobs:
           puts "::set-output name=tag::#{latest_release.tag_name}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: ruby
 
       - name: Download release tarball
         run: |
