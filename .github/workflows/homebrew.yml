@@ -1,7 +1,7 @@
 name: Update Homebrew Formula
 
 on:
-  workflow_dispatch: # Allow manual trigger
+  workflow_dispatch:
 
 jobs:
   update:
