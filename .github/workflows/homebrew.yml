@@ -58,7 +58,7 @@ jobs:
 
       - name: Update Ruby file
         run: |
-          ruby -pi -e "gsub(/url \".*\"/, \"url \\\"https://github.com/koriym/deepldoc/archive/refs/tags/${{ steps.latest_release.outputs.tag }}.tar.gz\\\"\")" /${{ matrix.command }}.rb
+          ruby -pi -e "gsub(/url \".*\"/, \"url \\\"https://github.com/koriym/deepldoc/releases/download/${{ steps.latest_release.outputs.tag }}/${{ matrix.command }}\\\"\")" /${{ matrix.command }}.rb
           ruby -pi -e "gsub(/sha256 \".*\"/, \"sha256 \\\"${{ steps.sha.outputs.sha }}\\\"\")" /${{ matrix.command }}.rb
 
       - name: Commit and push if it changed
