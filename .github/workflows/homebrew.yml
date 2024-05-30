@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        rubyfile: ['deepldoc.rb', 'deepl.rb']
+        command: ['deepldoc', 'deepl']
 
     steps:
       - name: Checkout code
@@ -49,17 +49,17 @@ jobs:
 
       - name: Download release tarball
         run: |
-          wget https://github.com/koriym/deepldoc/archive/refs/tags/${{ steps.latest_release.outputs.tag }}.tar.gz
+          wget https://github.com/koriym/deepldoc/releases/download/${{ steps.latest_release.outputs.tag }}/${{ matrix.command }}
 
       - name: Calculate SHA256
         id: sha
         run: |
-          echo "::set-output name=sha::$(sha256sum ${{ steps.latest_release.outputs.tag }}.tar.gz | awk '{ print $1 }')"
+          echo "::set-output name=sha::$(sha256sum /${{ matrix.command }} | awk '{ print $1 }')"
 
       - name: Update Ruby file
         run: |
-          ruby -pi -e "gsub(/url \".*\"/, \"url \\\"https://github.com/koriym/deepldoc/archive/refs/tags/${{ steps.latest_release.outputs.tag }}.tar.gz\\\"\")" ${{ matrix.rubyfile }}
-          ruby -pi -e "gsub(/sha256 \".*\"/, \"sha256 \\\"${{ steps.sha.outputs.sha }}\\\"\")" ${{ matrix.rubyfile }}
+          ruby -pi -e "gsub(/url \".*\"/, \"url \\\"https://github.com/koriym/deepldoc/archive/refs/tags/${{ steps.latest_release.outputs.tag }}.tar.gz\\\"\")" /${{ matrix.command }}.rb
+          ruby -pi -e "gsub(/sha256 \".*\"/, \"sha256 \\\"${{ steps.sha.outputs.sha }}\\\"\")" /${{ matrix.command }}.rb
 
       - name: Commit and push if it changed
         run: |
