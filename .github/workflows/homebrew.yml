@@ -1,0 +1,57 @@
+name: Update Homebrew Formula
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Run this workflow daily
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        rubyfile: ['deepldoc.rb', 'deepl.rb']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+
+      - name: Install dependencies
+        run: gem install octokit faraday
+
+      - name: Fetch latest release tag
+        id: latest_release
+        run: |
+          require 'octokit'
+          client = Octokit::Client.new(access_token: ENV['GITHUB_TOKEN'])
+          repo = 'koriym/deepldoc'
+          latest_release = client.latest_release(repo)
+          puts "::set-output name=tag::#{latest_release.tag_name}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download release tarball
+        run: |
+          wget https://github.com/koriym/deepldoc/archive/refs/tags/${{ steps.latest_release.outputs.tag }}.tar.gz
+
+      - name: Calculate SHA256
+        id: sha
+        run: |
+          echo "::set-output name=sha::$(sha256sum ${{ steps.latest_release.outputs.tag }}.tar.gz | awk '{ print $1 }')"
+
+      - name: Update Ruby file
+        run: |
+          ruby -pi -e "gsub(/url \".*\"/, \"url \\\"https://github.com/koriym/deepldoc/archive/refs/tags/${{ steps.latest_release.outputs.tag }}.tar.gz\\\"\")" ${{ matrix.rubyfile }}
+          ruby -pi -e "gsub(/sha256 \".*\"/, \"sha256 \\\"${{ steps.sha.outputs.sha }}\\\"\")" ${{ matrix.rubyfile }}
+
+      - name: Commit and push if it changed
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -am "Update to ${{ steps.latest_release.outputs.tag }}" --allow-empty
+          git push
