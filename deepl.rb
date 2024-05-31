@@ -1,8 +1,8 @@
 class Deepl < Formula
   desc "Command line tool for DeepL"
   homepage "https://github.com/koriym/deepldoc"
-  url "https://github.com/koriym/deepldoc/releases/download/0.2.0/deepl"
-  sha256 "c933f4e58c4a12194d118abe683aec9f6ce2d2ef6470b52f5aa0f28d2e0888ca"
+  url "https://github.com/koriym/deepldoc/releases/download/0.3.0/deepl"
+  sha256 "61e44482f292751bea8a4454665e9ecc6916d1ca59862f32557b614fc6132a19"
   def install
     bin.install "deepl"
   end
